@@ -1,4 +1,5 @@
 import pickle
+import sklearn
 
 
 # Array of errors should be sent [[start_time, end_time, temp, windows, pipes, shadows]]
@@ -18,5 +19,3 @@ def gen_results(array_of_errors):
         results.append(result)
 
     return results
-
-
