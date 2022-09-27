@@ -2,6 +2,7 @@ from datetime import timedelta
 import pandas as pd
 from datetime import datetime, timedelta
 import pandas as pd
+from plottesting import testingPlot
 
 
 def getCSV():
@@ -15,6 +16,7 @@ def getCSV():
     df_Errors = df_Errors[df_Errors.status_temperatuur != 0]
 
     df_Errors['local_time'] = pd.to_datetime(df_Errors['local_time'], format='%d/%m/%Y %I:%M %p')
+    df_Errors['local_time'] = pd.to_datetime(df_Errors['local_time'].astype(str), format='%Y/%m/%d %H:%M:%S')
     df_Errors[['buitentemperatuur', 'onderbuis', 'wind_zijde_raamstand', 'energiedoek', 'kastemperatuur']] = df_Errors[
         ['buitentemperatuur', 'onderbuis', 'wind_zijde_raamstand', 'energiedoek', 'kastemperatuur']].astype(float)
 
@@ -43,6 +45,7 @@ def getConnectedErrors(df_Errors):
                     break
         df_temp = df_temp.sort_values(by=['local_time'])
         if len(df_temp.index) >= 5:
+            testingPlot(df_temp['local_time'].to_numpy(), df_temp['kastemperatuur'].to_numpy())
             dict_of_errors[dictCount] = df_temp
             dictCount += 1
         df_temp = df_temp[0:0]
@@ -65,5 +68,4 @@ def getValues():
     values = []
     for group in split_errors:
         values.append(getAverages(split_errors[group]))
-    print(values)
     return values
