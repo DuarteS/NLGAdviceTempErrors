@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 
-def getCSVa():
+def getCSV():
     df = pd.read_csv('TempError1.csv', sep=';').drop(['temperatuur_hoog', 'temperatuur_laag'], axis=1).dropna()
     # print(df)
 
