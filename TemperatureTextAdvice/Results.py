@@ -15,6 +15,7 @@ def gen_results(array_of_errors):
         shadowResult = shadow_model.predict([[int(value[2]), int(value[5])]])[0]
 
         result = [value[0], value[1], value[2], windowResult, pipeResult, shadowResult]
+        print([value[0], value[1], value[2], windowResult, pipeResult, shadowResult])
 
         results.append(result)
 
