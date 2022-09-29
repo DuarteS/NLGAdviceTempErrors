@@ -130,7 +130,7 @@ def plotOnlineErrors(df, Windows, Pipes, Shadows):
     ftw = []
 
     for x in range(len(Windows)):
-        if Windows[x][3] >= 5:
+        if Windows[x][3] <= 5:
             fxw.append(Windows[x][0])
             fyw.append(Windows[x][1])
             ftw.append(Windows[x][4])
@@ -149,7 +149,7 @@ def plotOnlineErrors(df, Windows, Pipes, Shadows):
     ftw = []
 
     for x in range(len(Pipes)):
-        if Pipes[x][3] >= 5:
+        if Pipes[x][3] <= 5:
             fxw.append(Pipes[x][0])
             fyw.append(Pipes[x][1]+2)
             ftw.append(Pipes[x][4])
@@ -168,7 +168,7 @@ def plotOnlineErrors(df, Windows, Pipes, Shadows):
     ftw = []
 
     for x in range(len(Shadows)):
-        if Shadows[x][3] >= 5:
+        if Shadows[x][3] <= 5:
             fxw.append(Shadows[x][0])
             fyw.append(Shadows[x][1]+1)
             ftw.append(Shadows[x][4])

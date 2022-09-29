@@ -5,10 +5,10 @@ import pandas as pd
 
 
 def getCSVa():
-    df = pd.read_csv('TempError2.csv', sep=';').drop(['temperatuur_hoog', 'temperatuur_laag'], axis=1).dropna()
+    df = pd.read_csv('TempError1.csv', sep=';').drop(['temperatuur_hoog', 'temperatuur_laag'], axis=1).dropna()
     # print(df)
 
-    df2 = pd.read_csv('Reasons2.csv', sep=';').drop(['kastemperatuur'], axis=1).dropna()
+    df2 = pd.read_csv('Reasons1.csv', sep=';').drop(['kastemperatuur'], axis=1).dropna()
     # print(df2)
 
     df_Errors = pd.concat([df2.set_index('local_time'), df.set_index('local_time')], axis=1, join='inner').reset_index()
@@ -23,10 +23,10 @@ def getCSVa():
     return df_Errors
 
 def getCSVErrors():
-    df = pd.read_csv('TempError2.csv', sep=';').drop(['temperatuur_hoog', 'temperatuur_laag'], axis=1).dropna()
+    df = pd.read_csv('TempError1.csv', sep=';').drop(['temperatuur_hoog', 'temperatuur_laag'], axis=1).dropna()
     # print(df)
 
-    df2 = pd.read_csv('Reasons2.csv', sep=';').drop(['kastemperatuur'], axis=1).dropna()
+    df2 = pd.read_csv('Reasons1.csv', sep=';').drop(['kastemperatuur'], axis=1).dropna()
     # print(df2)
 
     df_Errors = pd.concat([df2.set_index('local_time'), df.set_index('local_time')], axis=1, join='inner').reset_index()
