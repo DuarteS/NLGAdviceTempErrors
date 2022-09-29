@@ -13,9 +13,9 @@ def get_Text(result):
     promptShadows = 'Temp ' + str(result[0]) + ', Item:  Shadows, Value:' + str(result[2]) + '\n\n---\n\n'
     promptPipes = 'Temp ' + str(result[0]) + ', Item:  Pipes, Value:' + str(result[3]) + '\n\n---\n\n'
 
-    responseW = 'windows'#GenText(promptWindows, "davinci:ft-personal:gpt-3-davinci-gpttempwindows-small-2022-09-20-06-37-58")
-    responseS = 'shadows'#GenText(promptShadows, "davinci:ft-personal:gpt-3-davinci-gpttempshadows-small-2022-09-20-06-43-46")
-    responseP = 'pipes'#GenText(promptPipes, "davinci:ft-personal:gpt-3-davinci-gpttemppipes-small-2022-09-20-06-59-50")
+    responseW = GenText(promptWindows, "davinci:ft-personal:gpt-3-davinci-gpttempwindows-small-2022-09-20-06-37-58")#'windows'#
+    responseS = GenText(promptShadows, "davinci:ft-personal:gpt-3-davinci-gpttempshadows-small-2022-09-20-06-43-46")#'shadows'#
+    responseP = GenText(promptPipes, "davinci:ft-personal:gpt-3-davinci-gpttemppipes-small-2022-09-20-06-59-50") #'pipes'#
 
     responses = [responseW, responseP, responseS]
 
