@@ -28,12 +28,31 @@ class Annotation(object):
         self.start_time = start_time
         self.end_time = end_time
         self.annotation_type = annotation_type
+
+    def calculate(self):
         self.result = generate_result(self.annotation_type, self.temp_status, self.value)
-        if self.result <= 5:
+        if self.result <= 3:
             self.text = generate_text(self.annotation_type, self.temp_status, self.result)
+        else:
+            self.text = ''
 
     def is_error(self):
         return True if 3 >= self.result else False
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def compare_basic(self, other):
+        if self.temp_status == other.temp_status \
+                and self.value == other.value \
+                and self.temp == other.temp\
+                and self.start_time == other.start_time \
+                and self.end_time == other.end_time \
+                and self.annotation_type == other.annotation_type:
+            return True
+        else:
+            return False
+
 
 
 def generate_result(annotation_type: str, temperature_higher: int, value: float):
@@ -131,7 +150,7 @@ def _getConnectedErrors(df_Errors):
     return dict_of_errors
 
 
-def get_averages(temp_csv, reason_csv):
+def _get_averages(temp_csv, reason_csv):
     connected_reason = _get_temp_reason_data(temp_csv, reason_csv)
     connected_errors = _getConnectedErrors(connected_reason)
 
@@ -146,20 +165,68 @@ def get_averages(temp_csv, reason_csv):
     return values
 
 
-def create_annotations():
-    averages = get_averages(TEMPFILE, REASONFILE)
+def create_annotations(temp_csv, reason_csv):
+    pickle_load = pickle.load(open('AnnoTest.sav', 'rb'))
+    loaded_annotations = []
+    for load in pickle_load:
+        loaded_annotations.append(load)
+    new_annotations = []
+
+    averages = _get_averages(temp_csv, reason_csv)
 
     for avg in averages:
-        annotations.append(Annotation(avg[0], avg[1], 'window', avg[2], avg[3], avg[4]))
-        annotations.append(Annotation(avg[0], avg[1], 'pipe', avg[2], avg[3], avg[5]))
-        annotations.append(Annotation(avg[0], avg[1], 'screen', avg[2], avg[3], avg[6]))
+
+        new_annotations.append(Annotation(avg[0], avg[1], 'window', avg[2], avg[3], avg[4]))
+        new_annotations.append(Annotation(avg[0], avg[1], 'pipe', avg[2], avg[3], avg[5]))
+        new_annotations.append(Annotation(avg[0], avg[1], 'screen', avg[2], avg[3], avg[6]))
+
+    existed = False
+    for new_annotation in new_annotations:
+        for load_annotation in loaded_annotations:
+            if new_annotation.compare_basic(load_annotation):
+                existed = True
+                annotations.append(load_annotation)
+                print("load")
+        if not existed:
+            new_annotation.calculate()
+            annotations.append(new_annotation)
+            existed = False
+            print("create")
+
+    for annotation in annotations:
+        if annotation not in loaded_annotations:
+            loaded_annotations.append(annotation)
+
+
+        # existedW = False
+        # existedP = False
+        # existedS = False
+        # for testAnno in annotations:
+        #     if not existedW and annoW == testAnno:
+        #         existedW = True
+        #     if not existedP and annoP == testAnno:
+        #         existedP = True
+        #     if not existedS and annoS == testAnno:
+        #         existedS = True
+        #
+        # if not existedW:
+        #     annotations.append(annoW)
+        #     existedW = False
+        # if not existedP:
+        #     annotations.append(annoP)
+        #     existedP = False
+        # if not existedS:
+        #     annotations.append(annoS)
+        #     existedS = False
 
     for anno in annotations:
         print(anno.__dict__)
 
+    pickle.dump(loaded_annotations, open('AnnoTest.sav', 'wb'))
+
 
 def create_graph():
-    create_annotations()
+    create_annotations(TEMPFILE, REASONFILE)
     plot_online_errors(_get_temp_reason_data(TEMPFILE, REASONFILE), annotations)
 
 
