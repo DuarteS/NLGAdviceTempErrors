@@ -7,7 +7,7 @@ import numpy as np
 def plot_online_errors(df, annotations):
     subfig = make_subplots(specs=[[{"secondary_y": True}]])
     fig = px.line(df, x='local_time', y=['onderbuis', 'wind_zijde_raamstand', 'energiedoek'])
-    fig2 = px.line(df, x='local_time', y=['kastemperatuur'])
+    fig2 = px.line(df, x='local_time', y=['kastemperatuur', 'temperatuur_hoog', 'temperatuur_laag'])
 
     fx = np.array([])
     fy = np.array([])
@@ -17,7 +17,7 @@ def plot_online_errors(df, annotations):
         if annotation.is_error() and annotation.text != "":
             fx = np.append(fx, annotation.start_time)
             fy = np.append(fy, annotation.value)
-            ft = np.append(ft, annotation.text)
+            ft = np.append(ft, annotation.text + ' ' + str(annotation.result))
 
     fig.add_trace(go.Scatter(
         x=fx,
