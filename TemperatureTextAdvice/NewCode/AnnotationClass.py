@@ -1,5 +1,5 @@
 import pickle
-
+import myconstants
 import openai
 
 
@@ -49,11 +49,11 @@ class Annotation(object):
 
 def generate_result(annotation_type: str, temperature_higher: int, value: float):
     if annotation_type == 'window':
-        model = pickle.load(open('../MLModels/Window_model.sav', 'rb'))
+        model = pickle.load(open(myconstants.WINDOWRESULTMODELFILE, 'rb'))
     elif annotation_type == 'pipe':
-        model = pickle.load(open('../MLModels/Pipe_model.sav', 'rb'))
+        model = pickle.load(open(myconstants.PIPERESULTMODELFILE, 'rb'))
     elif annotation_type == 'screen':
-        model = pickle.load(open('../MLModels/Shadow_model.sav', 'rb'))
+        model = pickle.load(open(myconstants.SCREENRESULTMODELFILE, 'rb'))
     else:
         return False
 
@@ -63,13 +63,13 @@ def generate_result(annotation_type: str, temperature_higher: int, value: float)
 
 def generate_text(annotation_type: str, temperature_status: int, result: int):
     if annotation_type == 'window':
-        model = "davinci:ft-personal:gpt-3-davinci-gpttempwindows-small-2022-09-20-06-37-58"
+        model = myconstants.WINDOWTEXTMODEL
         return "window error"
     elif annotation_type == 'pipe':
-        model = "davinci:ft-personal:gpt-3-davinci-gpttempshadows-small-2022-09-20-06-43-46"
+        model = myconstants.SCREENTEXTMODEL
         return "pipe error"
     elif annotation_type == 'screen':
-        model = "davinci:ft-personal:gpt-3-davinci-gpttemppipes-small-2022-09-20-06-59-50"
+        model = myconstants.PIPETEXTMODEL
         return "screen error"
     else:
         return False
