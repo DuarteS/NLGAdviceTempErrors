@@ -17,8 +17,8 @@ shadows = []
 
 for x in range(len(values)):
     windows.append([values[x][0],values[x][2],values[x][3],results[x][3],text[x][3]])
-    pipes.append([values[x][0], values[x][2], values[x][3], results[x][4], text[x][4]])
-    shadows.append([values[x][0], values[x][2], values[x][3], results[x][5], text[x][5]])
+    pipes.append([values[x][0], values[x][2], values[x][4], results[x][4], text[x][4]])
+    shadows.append([values[x][0], values[x][2], values[x][5], results[x][5], text[x][5]])
 
 print(windows)
 print(pipes)

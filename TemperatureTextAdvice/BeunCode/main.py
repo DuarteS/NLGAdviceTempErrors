@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 
 from CreateText import create_Text
-from Reasons import getValues, getSplitDF, getCSVa
+from Reasons import getValues, getSplitDF, getCSV
 from Results import gen_results
 from plottesting import testingPlot, plotOnline
 
@@ -47,7 +47,7 @@ while True:
 
         window.Element("text").update(display)
     if event == 'Gen - Graph':
-        df_temp = getCSVa()
+        df_temp = getCSV()
         text = create_Text(gen_results(getValues()))
         #plotOnline(df_temp['local_time'].to_numpy(), df_temp['kastemperatuur'].to_numpy(), text)
         plotOnline(df_temp, text)
