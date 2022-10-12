@@ -5,8 +5,8 @@ import pandas as pd
 import openai
 import myconstants
 
-from NewCode.AnnotationClass import Annotation
-from NewCode.Graphs import plot_online_errors
+from TempAdvice.AnnotationClass import Annotation
+from TempAdvice.Graphs import plot_online_errors
 
 annotations = []
 
