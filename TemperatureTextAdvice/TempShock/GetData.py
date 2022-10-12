@@ -34,9 +34,9 @@ def _find_shock(df_temp):
         temp_increase = 0
 
         if curr_temp >= test_temp:
-            temp_increase = curr_row[1].kastemperatuur - test_row[1].kastemperatuur
+            temp_increase = curr_temp - test_temp
         elif test_temp > curr_temp:
-            temp_increase = test_row[1].kastemperatuur - curr_row[1].kastemperatuur
+            temp_increase = test_temp - curr_temp
 
         if temp_increase >= dif_p_5m:
             # print(temp_increase, curr_row[1].local_time)
