@@ -12,10 +12,10 @@ annotations = []
 
 
 def _get_temp_reason_data(temp_csv, reason_csv):
-    df = pd.read_csv(temp_csv, sep=';').dropna()
+    df = pd.read_csv(temp_csv, sep=',').dropna()
     print(df.head())
 
-    df2 = pd.read_csv(reason_csv, sep=';').drop(['kastemperatuur'], axis=1).dropna()
+    df2 = pd.read_csv(reason_csv, sep=',').drop(['kastemperatuur'], axis=1).dropna()
     print(df2.head())
     df_errors = pd.concat([df2.set_index('local_time'), df.set_index('local_time')], axis=1, join='inner').reset_index()
 

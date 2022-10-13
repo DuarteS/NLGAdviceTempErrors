@@ -1,4 +1,3 @@
-
 # make predictions
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
@@ -17,8 +16,8 @@ for type in Models:
     dataset = read_csv(type + 'DataML.csv', names=names)
     # Split-out validation dataset
     array = dataset.values
-    X = array[:,0:2]
-    y = array[:,2]
+    X = array[:, 0:2]
+    y = array[:, 2]
     X_train, X_validation, Y_train, Y_validation = train_test_split(X, y, test_size=0.05, random_state=1)
     # Make predictions on validation dataset
     model = DecisionTreeClassifier()
