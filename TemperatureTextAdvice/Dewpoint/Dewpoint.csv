@@ -1,4 +1,4 @@
-local time,dauwpuntstemp,kastemperatuur,plant
+local_time,dauwpuntstemp,kastemperatuur,plant
 17/05/2022 1:55 PM,18.90382,24.7,26
 17/05/2022 2:00 PM,18.62096,24.5,25
 17/05/2022 2:05 PM,17.18274,23.7,22.7
