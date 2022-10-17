@@ -29,9 +29,9 @@ def _get_temp_data(temp_csv):
     return df_temperature
 
 
-def _find_shock(df_temp):
+def _find_shock_connections(df_temp):
     dif_p_5m = (max_var_hour / shock_time) * 5
-    df_temp_shock = pd.DataFrame(columns=['start_time', 'end_time', 'max_var', 'min_var'])
+    df_temp_shock = pd.DataFrame(columns=['start_index', 'end_index'])
 
     for curr_row in df_temp.iterrows():
         test_row = curr_row
@@ -48,12 +48,17 @@ def _find_shock(df_temp):
             temp_increase = test_temp - curr_temp
 
         if temp_increase >= dif_p_5m:
-            # print(temp_increase, curr_row[1].local_time)
-            #
-            start_time = curr_row[1].local_time - timedelta(hours=00, minutes=shock_time)
-            end_time = curr_row[1].local_time
+            EndIndex = curr_row[0]
+            StartIndex = df_temp[
+                df_temp['local_time'] == curr_row[1].local_time - timedelta(hours=00, minutes=shock_time)].index.values
+            time = shock_time
+            while not StartIndex:
+                time = time - 5
+                StartIndex = df_temp[df_temp['local_time'] == curr_row[1].local_time -
+                                     timedelta(hours=00, minutes=time)].index.values
+            StartIndex = StartIndex[0]
 
-            time_group = df_temp[(df_temp['local_time'] >= start_time) & (df_temp['local_time'] <= end_time)]
+            time_group = df_temp.iloc[StartIndex: EndIndex]
 
             max_var = time_group[SHOCK_TYPE].max()
             min_var = time_group[SHOCK_TYPE].min()
@@ -63,28 +68,39 @@ def _find_shock(df_temp):
             if max_var - min_var >= max_var_hour:
 
                 for temp_row in df_temp_shock.iterrows():
-                    test_start_time = temp_row[1].start_time
-                    test_end_time = temp_row[1].end_time
-                    test_max = temp_row[1].max_var
-                    test_min = temp_row[1].min_var
+                    test_start_time = temp_row[1].start_index
+                    test_end_time = temp_row[1].end_index
 
-                    if test_start_time < start_time < test_end_time:
-                        df_temp_shock.loc[temp_row[0], 'end_time'] = end_time
-                        if max_var > test_max:
-                            df_temp_shock.loc[temp_row[0], 'max_var'] = max_var
-                        if min_var < test_min:
-                            df_temp_shock.loc[temp_row[0], 'min_var'] = min_var
+                    if test_start_time < StartIndex < test_end_time:
+                        df_temp_shock.loc[temp_row[0], 'end_index'] = EndIndex
 
                         added = True
                         break
 
                 if not added:
-                    df_temp_shock.loc[df_temp_shock.shape[0]] = [start_time, end_time, max_var, min_var]
+                    df_temp_shock.loc[df_temp_shock.shape[0]] = [StartIndex, EndIndex]
 
         test_row = curr_row
 
     print(df_temp_shock.head(20))
     return df_temp_shock
+
+
+def _get_shock_plot_data(df_temp, df_shock_connected):
+    df_shock_plot_data = pd.DataFrame(columns=['start_time', 'end_time', 'max_var', 'min_var'])
+    for curr_row in df_shock_connected.iterrows():
+        time_group = df_temp.iloc[curr_row[1].start_index: curr_row[1].end_index]
+
+        print(time_group)
+        start_time = time_group['local_time'].min()
+        end_time = time_group['local_time'].max()
+
+        max_var = time_group[SHOCK_TYPE].max()
+        min_var = time_group[SHOCK_TYPE].min()
+
+        df_shock_plot_data.loc[df_shock_plot_data.shape[0]] = [start_time, end_time, max_var, min_var]
+
+    return df_shock_plot_data
 
 
 def plot_online_shock(df_data, df_shock):
@@ -93,7 +109,7 @@ def plot_online_shock(df_data, df_shock):
 
     subfig.add_traces(fig.data)
     subfig.layout.xaxis.title = "Time"
-    subfig.layout.yaxis.title = "Temperature"
+    subfig.layout.yaxis.title = SHOCK_TYPE
 
     for shock in df_shock.iterrows():
         subfig.add_shape(type="rect",
@@ -108,6 +124,6 @@ def plot_online_shock(df_data, df_shock):
 
 
 df = _get_temp_data(TEMP_FILE)
-plot_online_shock(df, _find_shock(df))
-
-
+shock_connections = _find_shock_connections(df)
+shock_plot_data = _get_shock_plot_data(df, shock_connections)
+plot_online_shock(df, shock_plot_data)

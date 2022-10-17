@@ -31,24 +31,40 @@ def _find_errors(df_dewpoints):
 
         updated = False
 
-        if kastemp - dewpoint < TEMP_DIFF:
+        if kastemp - dewpoint <= TEMP_DIFF:
 
             for value in df_dew_errors.iterrows():
                 if value[1]['type'] == "kas" and value[1]['start_time'] < time <= value[1]['end_time']:
-                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=15)
+                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=5)
+
+                    nparray = np.append([df_dew_errors.at[value[0], 'start_type']], kastemp)
+                    df_dew_errors.at[value[0], 'start_type'] = [nparray]
+
+                    nparray = np.append([df_dew_errors.at[value[0], 'start_dew']], dewpoint)
+                    df_dew_errors.at[value[0], 'start_dew'] = [nparray]
+
                     updated = True
             if not updated:
-                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=15),
-                                                             "kas", kastemp, dewpoint]
+                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=5),
+                                                             "kas", [np.array(kastemp)], [np.array(dewpoint)]]
 
-        if planttemp - dewpoint < TEMP_DIFF:
+        if planttemp - dewpoint <= TEMP_DIFF:
+
             for value in df_dew_errors.iterrows():
                 if value[1]['type'] == "plant" and value[1]['start_time'] < time <= value[1]['end_time']:
-                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=15)
+                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=5)
+
+                    nparray = np.append([df_dew_errors.at[value[0], 'start_type']], planttemp)
+                    df_dew_errors.at[value[0], 'start_type'] = nparray
+
+                    nparray = np.append([df_dew_errors.at[value[0], 'start_dew']], dewpoint)
+                    df_dew_errors.at[value[0], 'start_dew'] = nparray
+
                     updated = True
             if not updated:
-                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=15),
-                                                             "plant", planttemp, dewpoint]
+                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=5),
+                                                             "plant", np.array([planttemp]), np.array([dewpoint])]
+
 
     return df_dew_errors
 
@@ -62,9 +78,10 @@ def plot_online_shock(df_data, df_dew):
     subfig.layout.yaxis.title = "Temperature"
 
     for shock in df_dew.iterrows():
+        print(shock[1]["start_dew"])
         subfig.add_shape(type="rect",
-                         x0=shock[1]["start_time"], y0=shock[1]["start_dew"] - 1, x1=shock[1]["end_time"],
-                         y1=shock[1]["start_type"] + 1,
+                         x0=shock[1]["start_time"], y0=shock[1]["start_dew"][0] - 1, x1=shock[1]["end_time"],
+                         y1=shock[1]["start_type"][0] + 1,
                          line=dict(color="Red"),
                          )
     subfig.update_shapes(dict(xref='x', yref='y'))
