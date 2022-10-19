@@ -123,6 +123,20 @@ def plot_online_shock(df_data, df_shock):
     subfig.show()
 
 
+def text_generation(prompt):
+    response = openai.Completion.create(
+        model="davinci:ft-personal:shockmove-2022-10-18-15-22-14",
+        prompt=prompt + "\n-",
+        temperature=1,
+        max_tokens=100,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=["[]"]
+    )["choices"][0]['text']
+    return response
+
+
 df = _get_temp_data(TEMP_FILE)
 shock_connections = _find_shock_connections(df)
 shock_plot_data = _get_shock_plot_data(df, shock_connections)
