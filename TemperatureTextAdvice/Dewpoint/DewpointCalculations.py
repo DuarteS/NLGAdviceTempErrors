@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 TEMP_DIFF = 0.5
+TIME_DIFF = 15
 CSV_FILE = "../Dewpoint/Dewpoint.csv"
 
 
@@ -35,7 +36,7 @@ def _find_errors(df_dewpoints):
 
             for value in df_dew_errors.iterrows():
                 if value[1]['type'] == "kas" and value[1]['start_time'] < time <= value[1]['end_time']:
-                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=5)
+                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=TIME_DIFF)
 
                     nparray = np.append([df_dew_errors.at[value[0], 'start_type']], kastemp)
                     df_dew_errors.at[value[0], 'start_type'] = [nparray]
@@ -45,14 +46,14 @@ def _find_errors(df_dewpoints):
 
                     updated = True
             if not updated:
-                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=5),
+                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=TIME_DIFF),
                                                              "kas", [np.array(kastemp)], [np.array(dewpoint)]]
 
         if planttemp - dewpoint <= TEMP_DIFF:
 
             for value in df_dew_errors.iterrows():
                 if value[1]['type'] == "plant" and value[1]['start_time'] < time <= value[1]['end_time']:
-                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=5)
+                    df_dew_errors.loc[value[0], "end_time"] = time + timedelta(hours=00, minutes=TIME_DIFF)
 
                     nparray = np.append([df_dew_errors.at[value[0], 'start_type']], planttemp)
                     df_dew_errors.at[value[0], 'start_type'] = nparray
@@ -62,7 +63,7 @@ def _find_errors(df_dewpoints):
 
                     updated = True
             if not updated:
-                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=5),
+                df_dew_errors.loc[df_dew_errors.shape[0]] = [time, time + timedelta(hours=00, minutes=TIME_DIFF),
                                                              "plant", np.array([planttemp]), np.array([dewpoint])]
 
 
